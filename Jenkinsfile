@@ -4,7 +4,7 @@ pipeline {
     environment {
         // Variables pour les commandes
         FRONTEND_DIR = '03-frontend/angular-ecommerce'
-        BACKEND_DIR = '02-backend/spring-boot-restapi/pom.xml'
+        BACKEND_DIR = '02-backend/spring-boot-restapi'
     }
 
     stages {
