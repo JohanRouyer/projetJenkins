@@ -2,22 +2,27 @@ pipeline {
     agent any
 
     environment {
-        // Variables pour les commandes
         FRONTEND_DIR = '03-frontend/angular-ecommerce'
         BACKEND_DIR = '02-backend/spring-boot-restapi'
     }
 
     stages {
-        stage('Clone') {
+        stage('Checkout SCM') {
             steps {
-                // Cloner le dépôt
-                git 'https://github.com/NesiCodes/Fullstack-Ecommerce-Web.git'
+                git url: 'https://github.com/NesiCodes/Fullstack-Ecommerce-Web.git', branch: 'main'
+            }
+        }
+
+        stage('Verify Files') {
+            steps {
+                dir(BACKEND_DIR) {
+                    sh 'ls -la'  // Affiche le contenu du répertoire pour vérifier que pom.xml est présent
+                }
             }
         }
 
         stage('Install Backend Dependencies') {
             steps {
-                // Aller dans le répertoire du backend et installer les dépendances Maven
                 dir(BACKEND_DIR) {
                     sh 'mvn clean install'
                 }
@@ -26,7 +31,6 @@ pipeline {
 
         stage('Build Backend') {
             steps {
-                // Compiler l'application Spring Boot
                 dir(BACKEND_DIR) {
                     sh 'mvn spring-boot:run'
                 }
@@ -35,7 +39,6 @@ pipeline {
 
         stage('Install Frontend Dependencies') {
             steps {
-                // Aller dans le répertoire du frontend et installer les dépendances Node
                 dir(FRONTEND_DIR) {
                     sh 'npm install'
                 }
@@ -44,7 +47,6 @@ pipeline {
 
         stage('Build Frontend') {
             steps {
-                // Compiler l'application Angular
                 dir(FRONTEND_DIR) {
                     sh 'ng build --prod'
                 }
@@ -55,7 +57,6 @@ pipeline {
             parallel {
                 stage('Backend Tests') {
                     steps {
-                        // Tester le backend avec Maven
                         dir(BACKEND_DIR) {
                             sh 'mvn test'
                         }
@@ -63,7 +64,6 @@ pipeline {
                 }
                 stage('Frontend Tests') {
                     steps {
-                        // Tester le frontend avec Angular
                         dir(FRONTEND_DIR) {
                             sh 'ng test --watch=false'
                         }
@@ -74,9 +74,7 @@ pipeline {
 
         stage('Deploy') {
             steps {
-                // Déploiement de l'application
                 echo 'Déploiement de l\'application sur le serveur de staging...'
-                // Par exemple, copier les fichiers de build vers le serveur de production/staging
             }
         }
     }
