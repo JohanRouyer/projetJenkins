@@ -12,7 +12,6 @@ pipeline {
     stages {
         stage('Prepare Workspace') {
             steps {
-                // Utilisation d'un répertoire de travail spécifique
                 dir('/tmp/jenkins_workspace') {
                     deleteDir()  // Clean workspace before cloning
                     sh 'git config --global http.postBuffer 524288000'
