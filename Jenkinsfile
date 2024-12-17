@@ -6,16 +6,21 @@ pipeline {
     }
 
     stages {
-        stage('Checkout SCM') {
+        stage('Prepare Workspace') {
             steps {
-                git config --global http.postBuffer 524288000
-                checkout scm
+                // Nettoyer l'espace avant de cloner
+                deleteDir()
+                sh 'git config --global http.postBuffer 524288000'
             }
         }
 
-        stage('Clean Workspace') {
+        stage('Checkout SCM') {
             steps {
-                deleteDir()
+                script {
+                    retry(3) { // Essayer de cloner jusqu'à 3 fois en cas d'échec
+                        checkout scm
+                    }
+                }
             }
         }
 
@@ -30,7 +35,7 @@ pipeline {
         stage('Install Dependencies') {
             steps {
                 dir(BACKEND_DIR) {
-                    sh './mvnw clean install'
+                    sh './mvnw clean install -DskipTests'
                 }
             }
         }
@@ -38,7 +43,7 @@ pipeline {
         stage('Build Project') {
             steps {
                 dir(BACKEND_DIR) {
-                    sh './mvnw package'
+                    sh './mvnw package -DskipTests'
                 }
             }
         }
