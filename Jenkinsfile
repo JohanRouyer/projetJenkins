@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-        BACKEND_DIR = 'projetJenkins/02-backend/spring-boot-restapi'
+        BACKEND_DIR = '02-backend/spring-boot-restapi'
     }
 
     stages {
