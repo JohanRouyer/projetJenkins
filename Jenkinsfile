@@ -63,27 +63,23 @@ pipeline {
             }
         }
 
-        stage('Run Backend and Deploy Frontend') {
-            parallel {
-                stage('Run Backend') {
-                    steps {
-                        dir(BACKEND_DIR) {
-                            sh 'nohup java -jar target/*.jar & echo $! > backend_pid.txt'
-                        }
-                    }
+        stage('Run Backend') {
+            steps {
+                dir(BACKEND_DIR) {
+                    sh 'nohup java -jar target/*.jar & echo $! > backend_pid.txt'
                 }
+            }
+        }
 
-                stage('Deploy Frontend') {
-                    steps {
-                        dir(FRONTEND_DIR) {
-                            // Run HTTP server in background
-                            sh '''
-                            sudo npm install -g http-server
-                            http-server dist/angular-ecommerce -p 8080 &
-                            echo $! > http_server_pid.txt
-                            '''
-                        }
-                    }
+        stage('Deploy Frontend') {
+            steps {
+                dir(FRONTEND_DIR) {
+                    // Run HTTP server in background
+                    sh '''
+                    sudo npm install -g http-server
+                    http-server dist/angular-ecommerce -p 8080 &
+                    echo $! > http_server_pid.txt
+                    '''
                 }
             }
         }
