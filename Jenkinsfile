@@ -23,18 +23,42 @@ pipeline {
             }
         }
 
-        stage('Install Backend Dependencies') {
-            steps {
-                dir(BACKEND_DIR) {
-                    sh './mvnw clean install -DskipTests'
+        stage('Install Dependencies') {
+            parallel {
+                stage('Install Backend Dependencies') {
+                    steps {
+                        dir(BACKEND_DIR) {
+                            sh './mvnw clean install -DskipTests'
+                        }
+                    }
+                }
+
+                stage('Install Frontend Dependencies') {
+                    steps {
+                        dir(FRONTEND_DIR) {
+                            sh 'npm install'
+                        }
+                    }
                 }
             }
         }
 
-        stage('Build Backend') {
-            steps {
-                dir(BACKEND_DIR) {
-                    sh './mvnw package -DskipTests'
+        stage('Build') {
+            parallel {
+                stage('Build Backend') {
+                    steps {
+                        dir(BACKEND_DIR) {
+                            sh './mvnw package -DskipTests -T 4'  // Run in parallel using 4 threads if available
+                        }
+                    }
+                }
+
+                stage('Build Frontend') {
+                    steps {
+                        dir(FRONTEND_DIR) {
+                            sh 'ng build --configuration production'
+                        }
+                    }
                 }
             }
         }
@@ -43,28 +67,6 @@ pipeline {
             steps {
                 dir(BACKEND_DIR) {
                     sh 'nohup java -jar target/*.jar & echo $! > backend_pid.txt'
-                }
-            }
-        }
-
-        stage('Install Angular CLI') {
-            steps {
-                sh 'sudo npm install -g @angular/cli'
-            }
-        }
-
-        stage('Install Frontend Dependencies') {
-            steps {
-                dir(FRONTEND_DIR) {
-                    sh 'npm install'
-                }
-            }
-        }
-
-        stage('Build Frontend') {
-            steps {
-                dir(FRONTEND_DIR) {
-                    sh 'ng build --configuration production'
                 }
             }
         }
