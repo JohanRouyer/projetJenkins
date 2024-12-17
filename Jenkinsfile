@@ -2,7 +2,6 @@ pipeline {
     agent {
         node {
             label 'node1'
-            customWorkspace "${env.HOME}/jenkins_workspace" // Use env.HOME here
         }
     }
     environment {
