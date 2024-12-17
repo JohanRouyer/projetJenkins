@@ -20,7 +20,6 @@ pipeline {
             }
         }
 
-    stages {
         stage('Prepare Workspace') {
             steps {
                 // Clean workspace before cloning
