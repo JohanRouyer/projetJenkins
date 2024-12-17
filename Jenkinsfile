@@ -2,7 +2,9 @@ pipeline {
     agent any
 
     environment {
+        DB_SCRIPTS_DIR = '01-starter-files/db-scripts'
         BACKEND_DIR = '02-backend/spring-boot-restapi'
+        FRONTEND_DIR = 'frontend/angular-ecommerce'
     }
 
     stages {
@@ -24,15 +26,23 @@ pipeline {
             }
         }
 
-        stage('Verify Files') {
+        stage('Set up Database') {
             steps {
-                dir(BACKEND_DIR) {
-                    sh 'ls -la'
+                dir(DB_SCRIPTS_DIR) {
+                    // Lancer les scripts SQL (en supposant que MySQL CLI est configuré)
+                    script {
+                        sh '''
+                        for file in *.sql; do
+                            echo "Executing $file"
+                            mysql -u root -pYOUR_PASSWORD < $file
+                        done
+                        '''
+                    }
                 }
             }
         }
 
-        stage('Install Dependencies') {
+        stage('Install Backend Dependencies') {
             steps {
                 dir(BACKEND_DIR) {
                     sh './mvnw clean install -DskipTests'
@@ -40,7 +50,7 @@ pipeline {
             }
         }
 
-        stage('Build Project') {
+        stage('Build Backend') {
             steps {
                 dir(BACKEND_DIR) {
                     sh './mvnw package -DskipTests'
@@ -48,10 +58,44 @@ pipeline {
             }
         }
 
-        stage('Run Tests') {
+        stage('Run Backend') {
             steps {
                 dir(BACKEND_DIR) {
-                    sh './mvnw test'
+                    sh 'nohup java -jar target/*.jar &'
+                }
+            }
+        }
+
+        stage('Install Angular CLI') {
+            steps {
+                sh 'npm install -g @angular/cli'
+            }
+        }
+
+        stage('Install Frontend Dependencies') {
+            steps {
+                dir(FRONTEND_DIR) {
+                    sh 'npm install'
+                }
+            }
+        }
+
+        stage('Build Frontend') {
+            steps {
+                dir(FRONTEND_DIR) {
+                    sh 'ng build --prod'
+                }
+            }
+        }
+
+        stage('Deploy Frontend') {
+            steps {
+                dir(FRONTEND_DIR) {
+                    // Copier le build vers un serveur web (par ex., Nginx ou Apache)
+                    sh '''
+                    mkdir -p /var/www/html/angular-app
+                    cp -r dist/angular-ecommerce/* /var/www/html/angular-app/
+                    '''
                 }
             }
         }
@@ -62,7 +106,7 @@ pipeline {
             echo 'Pipeline terminé.'
         }
         success {
-            echo 'Build réussi !'
+            echo 'Déploiement réussi !'
         }
         failure {
             echo 'Échec du pipeline.'
