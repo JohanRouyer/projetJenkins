@@ -76,7 +76,7 @@ pipeline {
                 dir(FRONTEND_DIR) {
                     // Lancer un serveur HTTP localement pour servir l'application Angular
                     sh '''
-                    npm install -g http-server
+                    sudo npm install -g http-server
                     http-server dist/angular-ecommerce -p 8080 &
                     '''
                 }
