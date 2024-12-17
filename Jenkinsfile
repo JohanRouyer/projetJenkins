@@ -2,7 +2,7 @@ pipeline {
     agent {
         node {
             label 'node1'
-            customWorkspace "${HOME}/jenkins_workspace"
+            customWorkspace "${env.HOME}/jenkins_workspace" // Use env.HOME here
         }
     }
     environment {
@@ -13,7 +13,7 @@ pipeline {
     stages {
         stage('Prepare Workspace') {
             steps {
-                // Nettoyer l'espace avant de cloner
+                // Clean workspace before cloning
                 deleteDir()
                 sh 'git config --global http.postBuffer 524288000'
             }
@@ -22,7 +22,7 @@ pipeline {
         stage('Checkout SCM') {
             steps {
                 script {
-                    retry(3) { // Essayer de cloner jusqu'à 3 fois en cas d'échec
+                    retry(3) { // Try cloning up to 3 times in case of failure
                         checkout scm
                     }
                 }
@@ -48,14 +48,14 @@ pipeline {
         stage('Run Backend') {
             steps {
                 dir(BACKEND_DIR) {
-                    sh 'nohup java -jar target/*.jar &'
+                    sh 'nohup java -jar target/*.jar & echo $! > backend_pid.txt'
                 }
             }
         }
 
         stage('Install Angular CLI') {
             steps {
-                sh 'sudo npm install -g @angular/cli@latest'
+                sh 'npm install -g @angular/cli'
             }
         }
 
@@ -78,10 +78,11 @@ pipeline {
         stage('Deploy Frontend') {
             steps {
                 dir(FRONTEND_DIR) {
-                    // Lancer un serveur HTTP localement pour servir l'application Angular
+                    // Run HTTP server in background
                     sh '''
                     sudo npm install -g http-server
                     http-server dist/angular-ecommerce -p 8080 &
+                    echo $! > http_server_pid.txt
                     '''
                 }
             }
