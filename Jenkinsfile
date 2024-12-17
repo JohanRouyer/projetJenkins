@@ -34,7 +34,7 @@ pipeline {
                         sh '''
                         for file in *.sql; do
                             echo "Executing $file"
-                            mysql -u root -pYOUR_PASSWORD < $file
+                            mysql -u root -p < $file
                         done
                         '''
                     }
