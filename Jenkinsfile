@@ -76,7 +76,7 @@ pipeline {
                 dir(FRONTEND_DIR) {
                     // Copier le build vers un serveur web (par ex., Nginx ou Apache)
                     sh '''
-                    mkdir -p /var/www/html/angular-app
+                    sudo mkdir -p /var/www/html/angular-app
                     cp -r dist/angular-ecommerce/* /var/www/html/angular-app/
                     '''
                 }
