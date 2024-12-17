@@ -26,22 +26,6 @@ pipeline {
             }
         }
 
-        stage('Set up Database') {
-            steps {
-                dir(DB_SCRIPTS_DIR) {
-                    // Lancer les scripts SQL (en supposant que MySQL CLI est configuré)
-                    script {
-                        sh '''
-                        for file in *.sql; do
-                            echo "Executing $file"
-                            mysql -u root -p dbjenkins< $file
-                        done
-                        '''
-                    }
-                }
-            }
-        }
-
         stage('Install Backend Dependencies') {
             steps {
                 dir(BACKEND_DIR) {
