@@ -1,5 +1,5 @@
 pipeline {
-    agent any
+    agent node1
 
     environment {
         BACKEND_DIR = '02-backend/spring-boot-restapi'
