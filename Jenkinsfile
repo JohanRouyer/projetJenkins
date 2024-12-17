@@ -8,16 +8,15 @@ pipeline {
     stages {
         stage('Prepare Workspace') {
             steps {
-                    deleteDir()  // Clean workspace before cloning
-                    sh 'git config --global http.postBuffer 524288000'
-                }
+                deleteDir()  // Clean workspace before cloning
+                sh 'git config --global http.postBuffer 524288000'
             }
         }
 
         stage('Checkout SCM') {
             steps {
                 script {
-                    retry(3) { // Try cloning up to 3 times in case of failure
+                    retry(3) {  // Try cloning up to 3 times in case of failure
                         checkout scm
                     }
                 }
@@ -95,3 +94,4 @@ pipeline {
             echo 'Échec du pipeline.'
         }
     }
+}
