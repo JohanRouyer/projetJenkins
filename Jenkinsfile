@@ -1,6 +1,5 @@
 pipeline {
-    agent node1
-
+    agent { label 'node1' }
     environment {
         BACKEND_DIR = '02-backend/spring-boot-restapi'
         FRONTEND_DIR = '03-frontend/angular-ecommerce'
