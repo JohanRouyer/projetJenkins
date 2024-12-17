@@ -66,7 +66,7 @@ pipeline {
         stage('Build Frontend') {
             steps {
                 dir(FRONTEND_DIR) {
-                    sh 'ng build --prod'
+                    sh 'ng build --configuration production'
                 }
             }
         }
