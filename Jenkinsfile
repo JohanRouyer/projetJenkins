@@ -74,10 +74,10 @@ pipeline {
         stage('Deploy Frontend') {
             steps {
                 dir(FRONTEND_DIR) {
-                    // Copier le build vers un serveur web (par ex., Nginx ou Apache)
+                    // Lancer un serveur HTTP localement pour servir l'application Angular
                     sh '''
-                    sudo mkdir -p /var/www/html/angular-app
-                    cp -r dist/angular-ecommerce/* /var/www/html/angular-app/
+                    npm install -g http-server
+                    http-server dist/angular-ecommerce -p 8080 &
                     '''
                 }
             }
