@@ -34,7 +34,7 @@ pipeline {
                         sh '''
                         for file in *.sql; do
                             echo "Executing $file"
-                            mysql -u root -p dbjenkins < $file
+                            mysql -u root < $file
                         done
                         '''
                     }
