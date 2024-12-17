@@ -2,7 +2,6 @@ pipeline {
     agent any
 
     environment {
-        DB_SCRIPTS_DIR = '01-starter-files/db-scripts'
         BACKEND_DIR = '02-backend/spring-boot-restapi'
         FRONTEND_DIR = '03-frontend/angular-ecommerce'
     }
@@ -52,7 +51,7 @@ pipeline {
 
         stage('Install Angular CLI') {
             steps {
-                sh 'sudo npm install -g @angular/cli'
+                sh 'sudo npm install -g @angular/cli@latest'
             }
         }
 
