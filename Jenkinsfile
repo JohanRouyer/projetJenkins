@@ -1,9 +1,5 @@
 pipeline {
-    agent {
-        node {
-            label 'node1'
-        }
-    }
+    agent any
     environment {
         BACKEND_DIR = '02-backend/spring-boot-restapi'
         FRONTEND_DIR = '03-frontend/angular-ecommerce'
@@ -12,7 +8,6 @@ pipeline {
     stages {
         stage('Prepare Workspace') {
             steps {
-                dir('/tmp/jenkins_workspace') {
                     deleteDir()  // Clean workspace before cloning
                     sh 'git config --global http.postBuffer 524288000'
                 }
