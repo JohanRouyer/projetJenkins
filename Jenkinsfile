@@ -8,6 +8,7 @@ pipeline {
     stages {
         stage('Checkout SCM') {
             steps {
+                git config --global http.postBuffer 524288000
                 checkout scm
             }
         }
