@@ -4,6 +4,7 @@ pipeline {
             label 'node1'
             customWorkspace "${HOME}/jenkins_workspace"
         }
+    }
     environment {
         BACKEND_DIR = '02-backend/spring-boot-restapi'
         FRONTEND_DIR = '03-frontend/angular-ecommerce'
