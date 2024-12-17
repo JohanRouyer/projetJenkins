@@ -95,4 +95,3 @@ pipeline {
             echo 'Échec du pipeline.'
         }
     }
-}
