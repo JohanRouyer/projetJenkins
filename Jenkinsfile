@@ -20,14 +20,6 @@ pipeline {
             }
         }
 
-        stage('Prepare Workspace') {
-            steps {
-                // Clean workspace before cloning
-                deleteDir()
-                sh 'git config --global http.postBuffer 524288000'
-            }
-        }
-
         stage('Checkout SCM') {
             steps {
                 script {
