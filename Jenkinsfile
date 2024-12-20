@@ -77,7 +77,7 @@ pipeline {
                     // Run HTTP server in background
                     sh '''
                     sudo npm install -g http-server
-                    http-server dist/angular-ecommerce -p 8080 &
+                    http-server dist/angular-ecommerce -p 8088 &
                     echo $! > http_server_pid.txt
                     '''
                 }
